@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteo de Grupos</title>
+    <style>
+        /* Estilos básicos para centrar todo y que se vea bien en celulares */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            /* Ocupa toda la pantalla */
+            margin: 0;
+            color: white;
+            transition: background-color 0.5s;
+            /* Efecto suave al cambiar el color */
+        }
+
+        /* Sombras en el texto para que resalte sobre cualquier color de fondo */
+        h1 {
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        #grupo {
+            font-size: 12rem;
+            font-weight: bold;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>TU GRUPO ES:</h1>
+    <div id="grupo">?</div>
+
+    <script>
+        // Array con 13 colores distintos en formato Hexadecimal
+        const colores = [
+            "#E63946", "#F4A261", "#E9C46A", "#2A9D8F", "#264653",
+            "#8338EC", "#FF006E", "#3A86FF", "#00B4D8", "#0077B6",
+            "#9D4EDD", "#F15BB5", "#00F5D4"
+        ];
+
+        function asignar() {
+            // Genera un número aleatorio entre 1 y 13
+            const numero = Math.floor(Math.random() * 13) + 1;
+
+            // Muestra el número en la pantalla
+            document.getElementById('grupo').innerText = numero;
+
+            // Cambia el color de fondo. 
+            // Como los arrays empiezan en 0, le restamos 1 al número del grupo.
+            document.body.style.backgroundColor = colores[numero - 1];
+        }
+
+        // Ejecutar la función automáticamente cuando cargue la página
+        window.onload = asignar;
+    </script>
+</body>
+
+</html>
