@@ -13,7 +13,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100dvh;
+            min-height: 100dvh; /* Altura dinámica para celulares */
             color: white;
             transition: background-color 0.5s ease;
             padding: 1rem;
@@ -39,6 +39,7 @@
             opacity: 0;
             transform: scale(0.5);
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s forwards;
+            text-align: center;
         }
 
         #subtitulo {
@@ -53,12 +54,11 @@
 
         .confeti {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
             top: -20px;
+            border-radius: 2px;
             animation: caer linear forwards;
             opacity: 0.85;
+            pointer-events: none;
             z-index: 10;
         }
 
@@ -66,17 +66,14 @@
             from { opacity: 0; transform: translateY(-20px); }
             to   { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(10px); }
             to   { opacity: 0.8; transform: translateY(0); }
         }
-
         @keyframes popIn {
             from { opacity: 0; transform: scale(0.5) rotate(-5deg); }
             to   { opacity: 1; transform: scale(1) rotate(0deg); }
         }
-
         @keyframes caer {
             0%   { top: -20px; opacity: 0.9; }
             100% { top: 110vh; opacity: 0; }
@@ -89,7 +86,6 @@
     <p id="subtitulo">¡Busca a tus compañeros de grupo!</p>
 
     <script>
-        // Array con 15 colores distintos y llamativos
         const colores = [
             "#E63946", "#F4A261", "#E9C46A", "#2A9D8F", "#264653",
             "#8338EC", "#FF006E", "#3A86FF", "#00B4D8", "#0077B6",
@@ -113,15 +109,27 @@
         }
 
         function asignar() {
-            // Lógica para 15 grupos
-            const numero = Math.floor(Math.random() * 15) + 1;
-            const color = colores[numero - 1];
+            // Revisar si este dispositivo ya tiene un grupo guardado
+            let numero = localStorage.getItem('grupo_usuario');
 
-            document.getElementById('grupo').innerText = numero;
-            document.body.style.backgroundColor = color;
-
-            // Dispara el efecto visual
-            setTimeout(() => lanzarConfeti(color), 500);
+            if (!numero) {
+                // PRIMERA VEZ: Generar número (1 al 15) y guardar
+                numero = Math.floor(Math.random() * 15) + 1;
+                localStorage.setItem('grupo_usuario', numero);
+                
+                const color = colores[numero - 1];
+                document.getElementById('grupo').innerText = numero;
+                document.body.style.backgroundColor = color;
+                
+                // Efecto visual solo la primera vez
+                setTimeout(() => lanzarConfeti(color), 500);
+            } else {
+                // VISITAS POSTERIORES: Mostrar lo que ya estaba guardado
+                const color = colores[numero - 1];
+                document.getElementById('grupo').innerText = numero;
+                document.body.style.backgroundColor = color;
+                document.getElementById('subtitulo').innerText = "Ya tienes tu grupo asignado 👆";
+            }
         }
 
         window.onload = asignar;
