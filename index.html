@@ -1,67 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteo de Grupos</title>
     <style>
-        /* Estilos básicos para centrar todo y que se vea bien en celulares */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            /* Ocupa toda la pantalla */
-            margin: 0;
+            min-height: 100dvh;
             color: white;
-            transition: background-color 0.5s;
-            /* Efecto suave al cambiar el color */
+            transition: background-color 0.5s ease;
+            padding: 1rem;
+            background-color: #333;
+            overflow: hidden;
         }
 
-        /* Sombras en el texto para que resalte sobre cualquier color de fondo */
         h1 {
-            font-size: 2rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: clamp(1.2rem, 5vw, 2rem);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            letter-spacing: 0.1em;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeDown 0.6s ease 0.2s forwards;
         }
 
         #grupo {
-            font-size: 12rem;
+            font-size: clamp(6rem, 38vw, 15rem);
             font-weight: bold;
-            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+            text-shadow: 6px 6px 20px rgba(0,0,0,0.35);
+            line-height: 1;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s forwards;
+        }
+
+        #subtitulo {
+            font-size: clamp(0.85rem, 3vw, 1rem);
+            margin-top: 1.5rem;
+            opacity: 0;
+            letter-spacing: 0.05em;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+            text-align: center;
+            animation: fadeUp 0.6s ease 1s forwards;
+        }
+
+        .confeti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            top: -20px;
+            animation: caer linear forwards;
+            opacity: 0.85;
+            z-index: 10;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 0.8; transform: translateY(0); }
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.5) rotate(-5deg); }
+            to   { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        @keyframes caer {
+            0%   { top: -20px; opacity: 0.9; }
+            100% { top: 110vh; opacity: 0; }
         }
     </style>
 </head>
-
 <body>
     <h1>TU GRUPO ES:</h1>
-    <div id="grupo">?</div>
+    <div id="grupo"></div>
+    <p id="subtitulo">¡Busca a tus compañeros de grupo!</p>
 
     <script>
-        // Array con 13 colores distintos en formato Hexadecimal
+        // Array con 15 colores distintos y llamativos
         const colores = [
             "#E63946", "#F4A261", "#E9C46A", "#2A9D8F", "#264653",
             "#8338EC", "#FF006E", "#3A86FF", "#00B4D8", "#0077B6",
-            "#9D4EDD", "#F15BB5", "#00F5D4"
+            "#9D4EDD", "#F15BB5", "#00F5D4", "#FFD700", "#ADFF2F"
         ];
 
-        function asignar() {
-            // Genera un número aleatorio entre 1 y 13
-            const numero = Math.floor(Math.random() * 13) + 1;
-
-            // Muestra el número en la pantalla
-            document.getElementById('grupo').innerText = numero;
-
-            // Cambia el color de fondo. 
-            // Como los arrays empiezan en 0, le restamos 1 al número del grupo.
-            document.body.style.backgroundColor = colores[numero - 1];
+        function lanzarConfeti(color) {
+            const formas = ["●", "■", "▲", "★", "♦"];
+            for (let i = 0; i < 60; i++) {
+                const el = document.createElement("div");
+                el.classList.add("confeti");
+                el.innerText = formas[Math.floor(Math.random() * formas.length)];
+                el.style.left = Math.random() * 100 + "vw";
+                el.style.color = i % 3 === 0 ? "white" : color;
+                el.style.fontSize = (Math.random() * 14 + 8) + "px";
+                el.style.animationDuration = (Math.random() * 2 + 1.5) + "s";
+                el.style.animationDelay = (Math.random() * 0.8) + "s";
+                document.body.appendChild(el);
+                el.addEventListener("animationend", () => el.remove());
+            }
         }
 
-        // Ejecutar la función automáticamente cuando cargue la página
+        function asignar() {
+            // Lógica para 15 grupos
+            const numero = Math.floor(Math.random() * 15) + 1;
+            const color = colores[numero - 1];
+
+            document.getElementById('grupo').innerText = numero;
+            document.body.style.backgroundColor = color;
+
+            // Dispara el efecto visual
+            setTimeout(() => lanzarConfeti(color), 500);
+        }
+
         window.onload = asignar;
     </script>
 </body>
-
 </html>
